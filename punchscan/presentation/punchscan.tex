@@ -356,30 +356,30 @@
 	\begin{itemize}
 		\item Voter gets ballot, marks their choice
 		\item Voter destroys one of the two pages
-		\item Other page is scanned and published online, plus given to voter as receipt.
-		\item Voter's choice stored in $choice$ column of P table.
+		\item Other page is scanned and given to voter as receipt
+		\item Voter's permutated choice stored in $Choice$ column of P table.
 		\item \emph{Caveat}: Voters are supposed to verify that printed
-			ballot matches one of the commitments from P table.
-			Paper does not describe how that is intended to be
-			done.
+			ballot matches one of the unspoiled commitments from P
+			table. Paper does not describe how that is intended to
+			be done.
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Voting: Decrypting votes}
 	\begin{columns}
-		\column{0.3\textwidth}
+		\column{0.5\textwidth}
 		\begin{center}
-			\begin{tabular}{|c|c|}
+			\begin{tabular}{|c|c|c|c|}
 				\hline
-				$ID_P$ & $C\ (= m)$ \\
+				$ID_P$ & $\pi_{top}$ & $\pi_{bottom}$ & $Choice$ \\
 				\hline
-				1 & a (= a) \\
-				3 & b (= a) \\
-				6 & a (= b) \\
+				1 & ab &    & a (= a) \\
+				3 &    & ab & b (= a) \\
+				6 & ba &    & a (= b) \\
 				\hline
 			\end{tabular}
 		\end{center}
-		\column{0.45\textwidth}
+		\column{0.5\textwidth}
 		\begin{center}
 			\begin{tabular}{|c|c|c|c|c|}
 				\hline
@@ -391,7 +391,31 @@
 				\hline
 			\end{tabular}
 		\end{center}
-		\column{0.2\textwidth}
+	\end{columns}
+
+	\begin{itemize}
+		\item P table now only has information of scanned ballots
+		\item $Choice$ is encrypted vote. In brackets (unknown to election
+			authority!) is plaintext vote
+		\item Election authority calculates $\hat{R} = \pi_1(Choice)$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Voting: Decrypting votes (cont)}
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ \\
+				\hline
+				6 & $\rightarrow$       & a & $\circlearrowright$ & 5 \\
+				1 & $\circlearrowright$ & b & $\circlearrowright$ & 3 \\
+				3 & $\rightarrow$       & b & $\circlearrowright$ & 6 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.5\textwidth}
 		\begin{center}
 			\begin{tabular}{|c|c|}
 				\hline
@@ -406,13 +430,126 @@
 	\end{columns}
 
 	\begin{itemize}
-		\item Election authority calculates $\hat{R} = \pi_1(choice)$
-		\item And $R = \pi_2(\hat{R}) = (\pi_1 \circ \pi_2)(choice)$
+		\item Election authority calculates $R = \pi_2(\hat{R}) =
+			(\pi_2 \circ \pi_1)(choice)$
 		\item If voter chose $m$, then $Choice = (\pi_{top} \circ
-			\pi_{bottom})(m)$, and as $\pi_{top} \circ \pi_{bottom}
-			\circ \pi_1 \circ \pi_2 = id$, $R = m$.
+			\pi_{bottom})(m)$, and as $\pi_{2} \circ \pi_{1}
+			\circ \pi_{top} \circ \pi_{bottom} = id$, $R = m$.
+		\item Election authority can now publish the results of the election
 	\end{itemize}
 \end{frame}
+
+\begin{frame}{Voting: Decryption audit}
+	\begin{columns}
+		\column{0.25\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_P$ & $C$ \\
+				\hline
+				1 & a \\
+				3 & b \\
+				6 & a \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ \\
+				\hline
+				  &                     & a &                     &   \\
+				  &                     & b &                     &   \\
+				  &                     & b &                     &   \\
+				\hline
+				\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.25\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_R$ & $R$ \\
+				\hline
+				3 & a \\
+				5 & b \\
+				6 & a \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+
+	\begin{itemize}
+		\item Auditor gets to choose whether to reveal left or right half of decryption table
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Voting: Decryption audit (cont)}
+	\begin{columns}
+		\column{0.25\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_P$ & $C$ \\
+				\hline
+				1 & a \\
+				3 & b \\
+				6 & a \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ \\
+				\hline
+				6 & $\rightarrow$       & a &                     &   \\
+				1 & $\circlearrowright$ & b &                     &   \\
+				3 & $\rightarrow$       & b &                     &   \\
+				\hline
+				\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.25\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_R$ & $R$ \\
+				\hline
+				3 & a \\
+				5 & b \\
+				6 & a \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+
+	\begin{itemize}
+		\item Assume left half revealed
+		\item Auditor verifies that $\pi_1(C) = \hat{R}$
+		\item And that column commitment $Com_{ID_P, \pi_1}$ holds
+		\item Probability $1/2$ of catching cheating election authority
+			\begin{itemize}
+				\item Decryption table $D$ can be split into
+					$n$ shards $D_1, \ldots, D_n$, for each
+					of which auditor can choose the half to
+					reveal.
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Voting: Cast-as-intended audit}
+	\begin{itemize}
+		\item Election authority also publishes the scans of the ballots online
+		\item Voter can look it up using their ballot's serial number, and compare to their receipt
+	\end{itemize}
+\end{frame}
+
+\section{(Some) attacks}
 
 \section{References}
 
