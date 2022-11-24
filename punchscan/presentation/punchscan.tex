@@ -256,13 +256,169 @@
 	\end{itemize}
 \end{frame}
 
+\begin{frame}{Setup: Audit}
+	\begingroup
+	\fontsize{8pt}{10pt}\selectfont
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_{t}$ & $\pi_{b}$ & $c$ & $Com_{\pi_{t}}$ & $Com_{\pi_{b}}$ \\
+				\hline
+				1 & & & & $C_{1, 1}$ & $C_{1, 2}$ \\
+				2 & & & & $C_{2, 1}$ & $C_{2, 2}$ \\
+				3 & & & & $C_{3, 1}$ & $C_{3, 2}$ \\
+				4 & & & & $C_{4, 1}$ & $C_{4, 2}$ \\
+				5 & & & & $C_{5, 1}$ & $C_{5, 2}$ \\
+				6 & & & & $C_{6, 1}$ & $C_{6, 2}$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+				\hline
+				& & & & & $C_6$ \\
+				& & & & & $C_5$ \\
+				& & & & & $C_2$ \\
+				& & & & & $C_1$ \\
+				& & & & & $C_4$ \\
+				& & & & & $C_3$ \\
+				\hline
+				\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+	\endgroup
+
+	\begin{itemize}
+		\item Commitments of P and D tables released to the public.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Setup: Audit (cont)}
+	\begingroup
+	\fontsize{8pt}{10pt}\selectfont
+	\begin{columns}
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_{t}$ & $\pi_{b}$ & $c$ & $Com_{\pi_{t}}$ & $Com_{\pi_{b}}$ \\
+				\hline
+				1 & & & & $C_{1, 1}$ & $C_{1, 2}$ \\
+				2 & ab & ba & & $C_{2, 1}$ & $C_{2, 2}$ \\
+				3 & & & & $C_{3, 1}$ & $C_{3, 2}$ \\
+				4 & ba & ba & & $C_{4, 1}$ & $C_{4, 2}$ \\
+				5 & ab & ba & & $C_{5, 1}$ & $C_{5, 2}$ \\
+				6 & & & & $C_{6, 1}$ & $C_{6, 2}$ \\
+				\hline
+			\end{tabular}
+		\end{center}
+
+		\column{0.5\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+				\hline
+				  &                     & &                     &   & $C_6$ \\
+				5 & $\circlearrowright$ & & $\rightarrow$       & 4 & $C_5$ \\
+				2 & $\circlearrowright$ & & $\rightarrow$       & 1 & $C_2$ \\
+				  &                     & &                     &   & $C_1$ \\
+				4 & $\rightarrow$       & & $\rightarrow$       & 2 & $C_4$ \\
+				  &                     & &                     &   & $C_3$ \\
+				\hline
+				\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+	\endgroup
+
+	\begin{itemize}
+		\item Auditors pick half the rows to reveal
+		\item Can then verify row commitments, and $\pi_t \circ \pi_b
+			\circ \pi_1 \circ \pi_2 = id$
+		\item Remaining ballots are then printed
+	\end{itemize}
+\end{frame}
+
+\section{Voting phase}
+
+\begin{frame}{Voting: Filling out ballots}
+	To recap:
+	\begin{itemize}
+		\item Voter gets ballot, marks their choice
+		\item Voter destroys one of the two pages
+		\item Other page is scanned and published online, plus given to voter as receipt.
+		\item Voter's choice stored in $choice$ column of P table.
+		\item \emph{Caveat}: Voters are supposed to verify that printed
+			ballot matches one of the commitments from P table.
+			Paper does not describe how that is intended to be
+			done.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Voting: Decrypting votes}
+	\begin{columns}
+		\column{0.3\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_P$ & $C\ (= m)$ \\
+				\hline
+				1 & a (= a) \\
+				3 & b (= a) \\
+				6 & a (= b) \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.45\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ \\
+				\hline
+				6 & $\rightarrow$       & a & $\circlearrowright$ & 5 \\
+				1 & $\circlearrowright$ & b & $\circlearrowright$ & 3 \\
+				3 & $\rightarrow$       & b & $\circlearrowright$ & 6 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\column{0.2\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|}
+				\hline
+				$ID_R$ & $R$ \\
+				\hline
+				3 & a \\
+				5 & b \\
+				6 & a \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+
+	\begin{itemize}
+		\item Election authority calculates $\hat{R} = \pi_1(choice)$
+		\item And $R = \pi_2(\hat{R}) = (\pi_1 \circ \pi_2)(choice)$
+		\item If voter chose $m$, then $Choice = (\pi_{top} \circ
+			\pi_{bottom})(m)$, and as $\pi_{top} \circ \pi_{bottom}
+			\circ \pi_1 \circ \pi_2 = id$, $R = m$.
+	\end{itemize}
+\end{frame}
+
 \section{References}
 
 \begin{frame}[allowframebreaks]
 	\frametitle{References}
 	\printbibliography
-
-
 \end{frame}
 
 
