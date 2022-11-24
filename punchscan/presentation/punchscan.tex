@@ -63,10 +63,15 @@
 	To provide a voting system, where:
 	\begin{itemize}
 		\item The vote is managed by a central election authority
-		\item And voters get a paper-based receipt
-		\item Which does not allow votes to be bought nor coerced
-		\item Yet allows them to verify their votes are cast-as-intended
-		\item And auditors provide resilience against a malicious EA
+			\begin{itemize}
+				\item But auditors provide resilience against a malicious EA
+			\end{itemize}
+		\item Voters get a paper-based receipt
+			\begin{itemize}
+				\item Which does not allow votes to be bought nor coerced
+				\item Yet allows them to verify their votes are cast-as-intended
+			\end{itemize}
+		\item Voters intuitively understand how to vote
 	\end{itemize}
 \end{frame}
 
@@ -130,7 +135,8 @@
 		\item Voter destroys one half of the ballot
 		\item Other half gets scanned, and kept by voter as receipt
 		\item Unable to learn vote by looking at one half only
-		\item But: What to do in tally phase?
+		\item But: What to do in tally phase? Someone must know the
+			permutations of questions and answers.
 	\end{itemize}
 	\begin{figure}
 		\centering
@@ -139,12 +145,124 @@
 	\end{figure}
 \end{frame}
 
+\section{Setup phase}
+
+\begin{frame}{Election setup}
+	Election authority defines three tables:
+	\begin{itemize}
+		\item \textbf{P}: Print. Data which ends up on ballot.
+		\item \textbf{D}: Decrypt. Required to decrypt votes.
+		\item \textbf{R}: Results.
+		\item For following examples: Assume question with two choices:
+			$(a, b)$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Setup: Print table}
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_{top}$ & $\pi_{bottom}$ & $Choice$ & $Com_{\pi_{top}}$ & $Com_{\pi_{bottom}}$ \\
+			\hline
+			1 & ab & ab & & $C_{1, 1}$ & $C_{1, 2}$ \\
+			2 & ab & ba & & $C_{2, 1}$ & $C_{2, 2}$ \\
+			3 & ba & ab & & $C_{3, 1}$ & $C_{3, 2}$ \\
+			4 & ba & ba & & $C_{4, 1}$ & $C_{4, 2}$ \\
+			5 & ab & ba & & $C_{5, 1}$ & $C_{5, 2}$ \\
+			6 & ba & ab & & $C_{6, 1}$ & $C_{6, 2}$ \\
+			\hline
+		\end{tabular}
+	\end{center}
+
+	\begin{itemize}
+		\item $\pi_{top}, \pi_{bottom}$ are random permutations of top and bottom
+			sheet, here shown explicitly.
+		\item $Com_{\pi_{top}}, Com_{\pi_{bottom}}$ cryptographic commitments to
+			$\pi_{top}$, $\pi_{bottom}$
+		\item Consider ballot $1$ as canonical, i.e.
+			$\pi_{top} = \pi_{bottom} = id$.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Setup: Decryption table}
+	\begin{columns}
+		\column{0.3\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_{top}$ & $\pi_{bottom}$ \\
+				\hline
+				1 & ab & ab \\
+				2 & ab & ba \\
+				3 & ba & ab \\
+				4 & ba & ba \\
+				5 & ab & ba \\
+				6 & ba & ab \\
+				\hline
+			\end{tabular}
+		\end{center}
+
+		\column{0.7\textwidth}
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|c|c|}
+				\hline
+				$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+				\hline
+				6 & $\rightarrow$       & & $\circlearrowright$ & 5 & $C_6$ \\
+				5 & $\circlearrowright$ & & $\rightarrow$       & 4 & $C_5$ \\
+				2 & $\circlearrowright$ & & $\rightarrow$       & 1 & $C_2$ \\
+				1 & $\circlearrowright$ & & $\circlearrowright$ & 3 & $C_1$ \\
+				4 & $\rightarrow$       & & $\rightarrow$       & 2 & $C_4$ \\
+				3 & $\rightarrow$       & & $\circlearrowright$ & 6 & $C_3$ \\
+				\hline
+				\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	\end{columns}
+
+	\begin{itemize}
+		\item $\pi_1, \pi_2$ are permutations, but \textbf{not}
+			equal to permutations of top / bottom sheet. Rather
+			$\pi_{top} \circ \pi_{bottom} \circ \pi_1 \circ \pi_2 = id$.
+		\item $\rightarrow$ is identity permutation,
+			$\circlearrowright$ non-identity permutation on two
+			elements.
+		\item $Com_{i}$ is commitment to row, $Com_{ID_P, \pi_1},
+			Com_{\pi_2, ID_R}$ to two columns respectively.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Setup: Results table}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			$ID_R$ & $R$ \\
+			\hline
+			1 & \\
+			2 & \\
+			3 & \\
+			4 & \\
+			5 & \\
+			6 & \\
+			\hline
+		\end{tabular}
+	\end{center}
+
+	\begin{itemize}
+		\item Results table is empty, as outcome is not known ahead of
+			the election.\footnote{Does not apply to certain
+			countries}
+	\end{itemize}
+\end{frame}
 
 \section{References}
 
 \begin{frame}[allowframebreaks]
 	\frametitle{References}
 	\printbibliography
+
+
 \end{frame}
 
 
