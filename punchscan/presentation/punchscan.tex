@@ -64,7 +64,7 @@
 	\begin{itemize}
 		\item The vote is managed by a central election authority
 			\begin{itemize}
-				\item But auditors provide resilience against a malicious EA
+				\item But auditors provide resilience against a malicious election authority
 			\end{itemize}
 		\item Voters get a paper-based receipt
 			\begin{itemize}
@@ -549,7 +549,111 @@
 	\end{itemize}
 \end{frame}
 
-\section{(Some) attacks}
+\begin{frame}{Voting: Voter privacy?}
+	\begin{itemize}
+		\item Election authority only has access to half the ballot
+		\item The public only has access to half he ballot -> result association
+		\item Thus voter privacy preserved
+		\item \emph{Caveat}: Some assumptions:
+			\begin{itemize}
+				\item Voting authority does not learn serial number of voter's ballot
+				\item Full $P$ table is destroyed after printing
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\section{(Some) attacks on privacy}
+
+\begin{frame}{Attacking permutations}
+	\begin{itemize}
+		\item Information about ballot permutations contained in e.g. row commitments, thus commitment scheme must be hiding.
+			\begin{itemize}
+				\item Paper: Custom commitment scheme atop of AES and SHA-256. No proofs.
+			\end{itemize}
+		\item Row permutations of D and R tables must be irreversible
+			\begin{itemize}
+				\item Paper: Row permutations using AES with key known to election authority.
+			\end{itemize}
+		\item Cheating election authority: Full P table must be destroyed
+			after printing.
+	\end{itemize}
+\end{frame}
+
+\section{(Some) attacks on integrity}
+
+\begin{frame}{Attack: Cheating election authority}
+	\begin{itemize}
+		\item Audits in various phases of election have chance of
+			catching cheating election authority
+		\item Except: Verifying that P table equal to what is printed
+			requires voters to verify commitments
+	\end{itemize}
+\end{frame}
+
+\section{Vote-buying attack on older version of Punchscan}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan}
+	\begin{itemize}
+		\item In first version, voter did not have to commit to which
+			page to keep until after having voted.
+		\item Consider an election between Alice and Bob
+		\item We want to vote for Bob
+		\item There is a coercing party wanting to help Alice
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.55\textwidth]{../resources/vote_buying.drawio.png}
+		\caption{Possible ballots}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../resources/vote_buying_split.drawio.png}
+		\caption{Possible ballot layouts when voting for Bob}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\textbf{As a coercing party, we now offer to pay for any ballot receipt, as long as:}
+	\begin{itemize}
+		\item It is not a ballot where the order is b -> a
+		\item Where the voter selected the second option
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../resources/vote_buying_split_highlighted.drawio.png}
+		\caption{Possible ballot layouts when voting for Bob, accepted by coercer}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\textwidth]{../resources/vote_buying_split_highlighted_alice.drawio.png}
+		\caption{Possible ballot layouts when voting for Alice, accepted by coercer}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{Vote-buying attack on older version of Punchscan (cont)}
+	\begin{itemize}
+		\item Fix in Punchscan: Voter must commit to which half to keep before seeing their ballot.
+		\item Now, for every two Bob-voters we pay to vote for Alice...
+		\item We also pay two Alice-voters to vote for Bob.
+		\item This shows the importance of formal proofs, of which Punchscan has none.
+	\end{itemize}
+\end{frame}
+
+\section{Summary}
+
+% TODO
 
 \section{References}
 
@@ -557,308 +661,6 @@
 	\frametitle{References}
 	\printbibliography
 \end{frame}
-
-
-% \begin{frame}{Non-Goal}
-% 		\begin{itemize}
-% 				\item Keys only added during initialization
-% 						\begin{itemize}
-% 								\item Late addition can be done, but not
-% 										described in paper
-% 						\end{itemize}
-% 				\item No updates or deletion of keys
-% 				\item Fully in-memory
-% 				\item Less tight / rigorous bounds on false-positive error rate
-% 						than e.g. Bloom filter
-% 		\end{itemize}
-% \end{frame}
-% 
-% \section{Data structure layout}
-% 
-% \begin{frame}{How to efficiently encode a trie?}
-% 		\begin{columns}
-% 				\column{0.3\textwidth}
-% 				\begin{figure}
-% 						\centering
-% 						\includegraphics[width=\textwidth]{resources/trie.png}
-% 						\caption{Trie \autocite{booyabazookaTrieExampleSvg}}
-% 				\end{figure}
-% 				\column{0.7\textwidth}
-% 				\begin{itemize}
-% 						\item Assume trie of bytes, 64bit architecture
-% 						\item Naive approach: For each edge, store its value and
-% 								pointers to child node
-% 						\item Then $k \cdot (8 + 64)$ bit for $k$-child node
-% 						\item Hugely inefficient. Encoding \qty{1}{\byte} costs
-% 								\qty{9}{\byte}!
-% 						\item Enter LOUDS: space-efficient level-order encoding
-% 								of tries \autocite{jacobsonSpaceefficientStaticTrees1989}
-% 				\end{itemize}
-% 		\end{columns}
-% \end{frame}
-% 
-% \begin{frame}{FST: Fast succinct tries}
-% 		\begin{block}{Observation}
-% 						Upper levels of tries have many edges, lower levels
-% 						have few. Yet most accesses are to nodes of upper level.
-% 		\end{block}
-% 
-% 		\begin{itemize}
-% 				\item FST: Trie of keys, encoded with two variants of LOUDS encoding
-% 				\item LOUDS-DENSE for upper levels: Optimized for fast lookup
-% 				\item LOUDS-SPARSE  for lower levels: Optimized for compact storage
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{LOUDS-SPARSE}
-% 		\begin{itemize}
-% 				\item Three byte sequences: S-Labels, S-HasChild, S-LOUDS
-% 						\begin{itemize}
-% 								\item S-Labels: List of edges
-% 								\item S-HasChild: 1 IFF edge has FST sub-trie
-% 								\item S-LOUDS: 1 IFF edge is first in node
-% 						\end{itemize}
-% 				\item Plus byte sequence of associated values
-% 				\item Assume we want to store keys `f', `fa', `s'.
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{LOUDS-SPARSE: Example}
-% 		\begin{columns}
-% 				\column{0.4\textwidth}
-% 				\begin{figure}
-% 						\centering
-% 						\includegraphics[width=\textwidth]{resources/louds_trie}
-% 						\caption{Example FST}
-% 				\end{figure}
-% 				\column{0.6\textwidth}
-% 				\begin{figure}
-% 						\centering
-% 						\includegraphics[width=\textwidth]{resources/louds_sparse}
-% 						\caption{And its LOUDS-SPARSE encoding}
-% 				\end{figure}
-% 		\end{columns}
-% \end{frame}
-% 
-% \begin{frame}{SURF}
-% 		\begin{itemize}
-% 				\item FST with top $k$ levels as LOUDS-DENSE, rest as
-% 						LOUDS-SPARSE
-% 				\item Truncate keys as much as possible while still allowing
-% 						disambiguation
-% 				\item Optionally use $n$ additional bits to store additional
-% 						information about keys
-% 						\begin{itemize}
-% 								\item Bits of actual key: Good for point and
-% 										range queries, no tight bound on error
-% 										probability
-% 								\item Bits of hashed key: Good only for point
-% 										queries, tight bound on error
-% 										probability
-% 						\end{itemize}
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{SURF: Base, Hash, Real}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=\textwidth]{resources/surf}
-% 				\caption{SURF variants \autocite{zhangSuRFPracticalRange2018}}
-% 		\end{figure}
-% \end{frame}
-% 
-% \section{Operations}
-% 
-% \subsection{Lookup operations}
-% 
-% \begin{frame}{Lookup operations}
-% 		\begin{itemize}
-% 				\item Lookup operations can be implemented as combination of
-% 						$\operatorname{rank}$ and $\operatorname{select}$
-% 						queries on LOUDS-encoded datastructure.
-% 				\item $\operatorname{rank}_b(x)$: Number of bits with value $b$
-% 						up to position $x$
-% 				\item $\operatorname{select}_b(x)$: Position of $x$-th bit with value $b$
-% 				\item $B = 100010110$, $\operatorname{rank}_0(5) = 4$,
-% 						$\operatorname{select}_1(2) = 4$
-% 				\item Constant-time with use of lookup-tables: Cache rank and
-% 						select every $x$ bits, only count inbetween
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{Lookup operation: Example of point lookup for `toy'}
-% 		\begin{itemize}
-% 				\item Lookup of key `toy'
-% 				\item Example with LOUDS-SPARSE, as bitmap-heavy LOUDS-DENSE not
-% 						very human-friendly
-% 				\item Given node starting at index $p$, find index of its $k$-th child:
-% 						\[
-% 								\operatorname{select}_1(S\text{-}LOUDS, \operatorname{rank}_1(S\text{-}HasChild, p+k) + 1)
-% 						\]
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{Lookup operation: Example of point lookup for `toy'}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=\textwidth]{resources/surf_point_lookup_1}
-% 				\caption{Point lookup for `toy'}
-% 		\end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Lookup operation: Example of point lookup for `toy'}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=\textwidth]{resources/surf_point_lookup_2}
-% 				\caption{Point lookup for `toy'}
-% 		\end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Lookup operation: Example of point lookup for `toy'}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=\textwidth]{resources/surf_point_lookup_3}
-% 				\caption{Point lookup for `toy'}
-% 		\end{figure}
-% \end{frame}
-% 
-% \section{Performance}
-% 
-% % Not required according to newest documents
-% 
-% \begin{frame}{Performance evaluation}
-% 		\textbf{Some high-level non-quantitative results from the SuRF paper}
-% 		\begin{itemize}
-% 				\item SuRF has higher false-positive rate than bloom
-% 				\item Hence outperformed (in RocksDB) by bloom filter for point queries
-% 				\item But allows to speed up range query throughput by \qty{50}{\percent}
-% 		\end{itemize}
-% \end{frame}
-% 
-% \section{Summary \& QA}
-% 
-% \begin{frame}{Summary}
-% 		\begin{itemize}
-% 				\item SuRF: Data structure for probabilistic point and range
-% 						membership queries
-% 				\item FST: Succinct encoding of truncated tries
-% 				\item LOUDS-DS: Encoding of tries, made for fast traversal of
-% 						upper levels and compact storage of lower levels
-% 		\end{itemize}
-% \end{frame}
-% 
-% \appendix
-% \section{\appendixname}
-% 
-% \begin{frame}{LOUDS-DENSE}
-% 		\begin{itemize}
-% 				\item Three bitmaps: D-Labels, D-HasChild, D-IsPrefixKey
-% 						\begin{itemize}
-% 								\item D-Labels: Set bits corresponding to edges
-% 								\item D-HasChild: Set bits if corresponding edge has FST sub-trie
-% 								\item D-IsPrefixKey: Set bit if path up to node is a key
-% 						\end{itemize}
-% 				\item $\qty{513}{\bit}$ per node
-% 				\item Plus byte sequence of associated values
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{LOUDS-DENSE: Example}
-% 		\begin{columns}
-% 				\column{0.35\textwidth}
-% 				\begin{figure}
-% 						\centering
-% 						\includegraphics[width=\textwidth]{resources/louds_trie}
-% 						\caption{Example FST}
-% 				\end{figure}
-% 				\column{0.65\textwidth}
-% 				\begin{figure}
-% 						\centering
-% 						\includegraphics[width=\textwidth]{resources/louds_dense}
-% 						\caption{And its LOUDS-DENSE encoding}
-% 				\end{figure}
-% 		\end{columns}
-% \end{frame}
-% 
-% 
-% \subsection{Initializing SuRF}
-% 
-% \begin{frame}{Initializing SuRF}
-% 		\begin{itemize}
-% 				\item \textbf{Goal} Given set of sorted keys, turn it into SuRF
-% 						data structure (i.e. LOUDS-encoded FST)
-% 				\item Not specified by paper
-% 				\item Depth-first: Process keys one by one
-% 						\begin{itemize}
-% 								\item Fairly straight-forward for generic tries
-% 								\item But LOUDS is a level-order encoding. No
-% 										clue where to place nodes in memory
-% 										before we encoded all nodes before it.
-% 						\end{itemize}
-% 
-% 				\item Breadth-firsth: Process keys in parallel, byte by byte.
-% 						\begin{itemize}
-% 								\item Allows to encode all nodes of one level
-% 										before moving on to the next
-% 								\item But requires keeping track of which keys
-% 										go where
-% 						\end{itemize}
-% 		\end{itemize}
-% \end{frame}
-% 
-% \begin{frame}{Initializing SuRF: Breadth-first}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=\textwidth]{resources/initializing_surf_1}
-% 				\caption{Initializing SuRF}
-% 		\end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Initializing SuRF: Breadth-first}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=0.9\textwidth]{resources/initializing_surf_2}
-% 				\caption{Initializing SuRF}
-% 		\end{figure}
-% 
-% 		\note[item]{Edge for `f' is set (D-Labels respectively S-Labels)}
-% 		\note[item]{There are keys left which pass through that node, so it has
-% 		an FST sub-component there. (D-HasChild respectively S-HasChild)}
-% 		\note[item]{A key ends on that node. (D-IsPrefixKey)}
-% 		\note[item]{Have left out storing of values for brevity}
-% 		\note[item]{Edge for `s' is set}
-% 		\note[item]{No more keys along that path, so no FST sub-component}
-% \end{frame}
-% 
-% \begin{frame}{Initializing SuRF: Breadth-first}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=0.7\textwidth]{resources/initializing_surf_3}
-% 				\caption{Initializing SuRF}
-% 		\end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Initializing SuRF: Breadth-first}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[height=0.6\textwidth]{resources/initializing_surf_4}
-% 				\caption{Initializing SuRF}
-% 		\end{figure}
-% \end{frame}
-% 
-% \begin{frame}{Initializing SuRF: Breadth-first}
-% 		\begin{figure}
-% 				\centering
-% 				\includegraphics[width=0.6\textwidth]{resources/initializing_surf_5}
-% 				\caption{Initializing SuRF}
-% 		\end{figure}
-% 
-% 		\note[item]{Until we finally have initialized the whole tree}
-% 		\note[item]{Note that some details left out: Handling change from
-% 		LOUDS-DENSE to LOUDS-SPARSE, values, ...}
-% 		\note[item]{Possible that added complexity outweights cost of copying
-% 		memory, so depth-first might be faster}
-% \end{frame}
 
 
 \end{document}
