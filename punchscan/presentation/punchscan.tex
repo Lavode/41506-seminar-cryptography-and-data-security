@@ -38,7 +38,8 @@
   sorting=ynt % Sort by year, name, title
 ]{biblatex}
 \addbibresource{references.bib}
-\nocite{*}
+% Main resource for presentation
+\nocite{fisherPunchscanIntroductionSystem2006}
 
 % A more modern (and less beamer-y) theme
 \usetheme{metropolis}
@@ -72,6 +73,7 @@
 				\item Yet allows them to verify their votes are cast-as-intended
 			\end{itemize}
 		\item Voters intuitively understand how to vote
+		\item Thus: Punchscan, 2006 \autocite{fisherPunchscanIntroductionSystem2006}
 	\end{itemize}
 \end{frame}
 
@@ -551,46 +553,44 @@
 
 \begin{frame}{Voting: Voter privacy?}
 	\begin{itemize}
-		\item Election authority only has access to half the ballot
-		\item The public only has access to half he ballot -> result association
-		\item Thus voter privacy preserved
-		\item \emph{Caveat}: Some assumptions:
-			\begin{itemize}
-				\item Voting authority does not learn serial number of voter's ballot
-				\item Full $P$ table is destroyed after printing
-			\end{itemize}
+		\item Only half the ballot public, thus unable to determine vote from $\pi_{top}, \pi_{bottom}$
+		\item Only half the D table public, thus unable to determine vote from $\pi_1, \pi_2$
+		\item Does not hold against malicious election authority, of course
 	\end{itemize}
 \end{frame}
 
-\section{(Some) attacks on privacy}
+\section{Some (theoretical) attacks on privacy}
 
 \begin{frame}{Attacking permutations}
 	\begin{itemize}
-		\item Information about ballot permutations contained in e.g. row commitments, thus commitment scheme must be hiding.
+		\item Row commitments contain information about ballot
+			permutations, thus commitment scheme must be hiding.
 			\begin{itemize}
-				\item Paper: Custom commitment scheme atop of AES and SHA-256. No proofs.
+				\item Paper: Custom, complicated commitment
+					scheme atop of AES and SHA-256. No
+					proofs.
 			\end{itemize}
 		\item Row permutations of D and R tables must be irreversible
 			\begin{itemize}
 				\item Paper: Row permutations using AES with key known to election authority.
 			\end{itemize}
-		\item Cheating election authority: Full P table must be destroyed
-			after printing.
 	\end{itemize}
 \end{frame}
 
-\section{(Some) attacks on integrity}
+\section{A gaping hole in ballot integrity}
 
-\begin{frame}{Attack: Cheating election authority}
+\begin{frame}{Print table vs printed ballots}
 	\begin{itemize}
 		\item Audits in various phases of election have chance of
 			catching cheating election authority
 		\item Except: Verifying that P table equal to what is printed
 			requires voters to verify commitments
+		\item Cheating election authority has many other
+			options\autocite{lundinTearDestroyChain2012}
 	\end{itemize}
 \end{frame}
 
-\section{Vote-buying attack on older version of Punchscan}
+\section{Vote-buying attack on older version of Punchscan \autocite{moranSplitballotVotingEverlasting2010}}
 
 \begin{frame}{Vote-buying attack on older version of Punchscan}
 	\begin{itemize}
@@ -647,13 +647,22 @@
 		\item Fix in Punchscan: Voter must commit to which half to keep before seeing their ballot.
 		\item Now, for every two Bob-voters we pay to vote for Alice...
 		\item We also pay two Alice-voters to vote for Bob.
+		\item Attack also extended to multi-candidate votes\autocite{kelseyAttackingPaperBasedE2E2010}
 		\item This shows the importance of formal proofs, of which Punchscan has none.
 	\end{itemize}
 \end{frame}
 
 \section{Summary}
 
-% TODO
+\begin{frame}{Summary}
+	\begin{itemize}
+		\item Punchscan: Voter-verifiable election system with paper-based receipt
+		\item No possibility for vote-buying --- except when it does
+		\item Secure against a malicious election authority --- except when it is not
+		\item Good example of difficulty in designing useable and
+			secure system
+	\end{itemize}
+\end{frame}
 
 \section{References}
 
