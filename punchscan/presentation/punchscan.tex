@@ -226,7 +226,7 @@
 	\begin{itemize}
 		\item $\pi_1, \pi_2$ are permutations, but \textbf{not}
 			equal to permutations of top / bottom sheet. Rather
-			$\pi_{top} \circ \pi_{bottom} \circ \pi_1 \circ \pi_2 = id$.
+			$\pi_{2} \circ \pi_{1} \circ \pi_{bottom} \circ \pi_{top} = id$.
 		\item $\rightarrow$ is identity permutation,
 			$\circlearrowright$ non-identity permutation on two
 			elements.
@@ -345,8 +345,8 @@
 
 	\begin{itemize}
 		\item Auditors pick half the rows to reveal
-		\item Can then verify row commitments, and $\pi_t \circ \pi_b
-			\circ \pi_1 \circ \pi_2 = id$
+		\item Can then verify row commitments, and $\pi_2 \circ \pi_1
+			\circ \pi_b \circ \pi_t = id$
 		\item Remaining ballots are then printed
 	\end{itemize}
 \end{frame}
@@ -434,9 +434,9 @@
 	\begin{itemize}
 		\item Election authority calculates $R = \pi_2(\hat{R}) =
 			(\pi_2 \circ \pi_1)(choice)$
-		\item If voter chose $m$, then $Choice = (\pi_{top} \circ
-			\pi_{bottom})(m)$, and as $\pi_{2} \circ \pi_{1}
-			\circ \pi_{top} \circ \pi_{bottom} = id$, $R = m$.
+		\item If voter chose $m$, then $Choice = (\pi_{bottom} \circ
+			\pi_{top})(m)$, and as $\pi_{2} \circ \pi_{1}
+			\circ \pi_{bottom} \circ \pi_{top} = id$, $R = m$.
 		\item Election authority can now publish the results of the election
 	\end{itemize}
 \end{frame}
