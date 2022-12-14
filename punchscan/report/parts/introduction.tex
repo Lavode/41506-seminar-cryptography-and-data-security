@@ -5,4 +5,23 @@ This report provides an overview of the Punchscan voting system. It aims to
 explain the utilized concepts, point out shortcomings, and highlight some of
 the attacks which have been published since.
 
+% TODO elaborate why we start with this, rather than what is done in setup phase.
+Chapter \ref{ch:ballot_design_and_voting} will start by introducing the layout
+of the ballot as well as the process of voting from the voter's point of view.
+
 % TODO elaborate on structure of report.
+
+\section{Notation}
+
+\subsection{Permutations}
+
+Permutations will be denoted by the letter $\pi$, with an index describing
+their purpose. As an example, $\pi_{top}$ will be used to refer to the
+permutation of the ballot's top page. We will use the standard one-line
+notation where, for a permutation over elements $\{a, b, c\}$ with the canonical
+ordering, $\pi = cba$ refers to a permutation $\pi$ such that $\pi(a) = c$,
+$\pi(b) = b$, and $\pi(c) = a$. For a permutation over two elements we also use
+the notation as in the paper, where $\rightarrow$ is the identity
+permutation and $\circlearrowright$ is the permutation flipping the two
+elements. Composition of permutations is denoted as $\pi_1 \circ \pi_2$,
+evaluated right-to-left.

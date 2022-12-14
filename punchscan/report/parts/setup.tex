@@ -1,3 +1,50 @@
 \chapter{Setup}
 
-This chapter will elaborate.
+During the setup phase, the election authority will initialize the contents of
+three tables. This will be followed by an audit, to ensure honesty of the
+election authority. The three tables which are initialized are referred to as
+the \textbf{P}, \textbf{D} and \textbf{R} tables:
+\begin{description}
+\item[\emph{P}rint table] Contains all information which is required to print
+the ballots, along with information for auditing purposes.
+\item[\emph{D}ecryption table] Contains all information required to decrypt the
+voter's encrypted vote in the tally phase, along with information for auditing
+purposes.
+\item[\emph{R}esults table] Contains outcome of election.
+\end{description}
+
+For the following, we will assume an election with one question, answer
+possibilities $a$ and $b$, voted on by $n$ voters.
+
+\section{Election authority in a threshold setting}
+
+For the purpose of this chapter we assume the election authority to be a single entity, in full possession of their private keys. In a real-life deployment it would be prudent to utilize some form of threshold cryptography to spread the trust across multiple parties.
+
+\section{Initializing the \textbf{P} table}
+
+The election authority first populates $2n$ rows of the \emph{P} table as shown
+in table . This table is indexed by a primary key $ID_P$,
+corresponding to the ballot ID which will be printed on both pages of the
+ballot. It then picks two random permutations \ptop{} and \pbottom{}
+over $2$ elements, corresponding to the permutations of the top and bottom
+pages respectively. Permutations are chosen as described in %TODO
+, but will be shown explicitly here.
+
+For each row it then calculates two cryptographic commitments, \ctop{} and
+\cbottom{}, to \ptop{} and \pbottom{} respectively.
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$ID_P$ & $\pi_{top}$ & $\pi_{bottom}$ & $Choice$ & $Com_{\pi_{top}}$ & $Com_{\pi_{bottom}}$ \\
+		\hline
+		1 & ab & ab & & $C_{1, 1}$ & $C_{1, 2}$ \\
+			2 & ab & ba & & $C_{2, 1}$ & $C_{2, 2}$ \\
+			3 & ba & ab & & $C_{3, 1}$ & $C_{3, 2}$ \\
+			4 & ba & ba & & $C_{4, 1}$ & $C_{4, 2}$ \\
+			5 & ab & ba & & $C_{5, 1}$ & $C_{5, 2}$ \\
+			6 & ba & ab & & $C_{6, 1}$ & $C_{6, 2}$ \\
+			\hline
+			\end{tabular}
+			\end{table}
