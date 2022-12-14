@@ -1,7 +1,12 @@
 punchscan/presentation/*.log
 punchscan/presentation/*.pdf
-*.sdm
 
 # Draw.io temporary files
 *.bkp
 *.dtmp
+
+# SDM files
+swiss-post/demo/
+swiss-post/voting-slip-o-matic
+swiss-post/election-count-o-matic/mapping.yml
+swiss-post/election-count-o-matic/*.csv
