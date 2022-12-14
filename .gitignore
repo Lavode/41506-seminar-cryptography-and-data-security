@@ -1,2 +1,7 @@
 punchscan/presentation/*.log
 punchscan/presentation/*.pdf
+*.sdm
+
+# Draw.io temporary files
+*.bkp
+*.dtmp
