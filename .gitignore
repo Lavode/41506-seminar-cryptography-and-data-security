@@ -1,5 +1,5 @@
-punchscan/presentation/*.log
-punchscan/presentation/*.pdf
+punchscan/**/*.log
+punchscan/**/*.pdf
 
 # Draw.io temporary files
 *.bkp
