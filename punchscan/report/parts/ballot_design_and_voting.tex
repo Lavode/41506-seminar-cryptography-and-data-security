@@ -47,3 +47,12 @@ receipt.
 \caption{Top (left) and bottom (right) pages of ballot after voter marked their choice}
 \label{fig:punchscan_ballot_voted}
 \end{figure}
+
+% TODO this should probably be moved to a separate section?
+\subsection{Vote buying / coercion}
+
+As the voter only gets to keep one half of the ballot, a third party to which
+they show the receipt will see either \ptop{} or \pbottom{}, as well as the
+voter's permuted choice. As they will not have access to either the top or the
+bottom permutation they are unable to reconstruct the voter's plaintext vote,
+and a naive coercion attepmt will fail.

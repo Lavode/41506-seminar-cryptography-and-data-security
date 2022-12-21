@@ -56,17 +56,17 @@ For each row it then calculates two cryptographic commitments, \ctop{} and
 The election authority then populates $2n$ rows of the \emph{D} table as per
 table \ref{tbl:d_table_full}. This table contains a reference to the \emph{P}
 table by means of the $ID_P$ column, and to the \emph{R} table by means of the
-$ID_$ column. Both $ID_P$ and $ID_R$ are random and independent permutations of
-the elements $1, 2, \ldots, 2n$.
+$ID_R$ column. Both $ID_P$ and $ID_R$ are random and independent permutations
+of the elements $1, 2, \ldots, 2n$. It then chooses \pone{} randomly, and
+calculates \ptwo{} such that $\ptop \circ \pbottom \circ \pone \circ \ptwo =
+id$ yields the identity permutation. To achieve a concise notation,
+$\rightarrow$ stands for the identity permutation over two elements, while
+$\circlearrowright$ stands for the permutation flipping the two elements.
 
-The election authority then chooses $\pone$ randomly, and calculates $\ptwo$
-such that $\ptop \circ \pbottom \circ \pone \circ \ptwo = id$ yields the
-identity permutation.
-
-% TODO left off, elaborate on:
-% - Commitment
-% - R-hat
-% then on R table
+The $\hat{R}$ column is left empty during the setup phase. As a last step a
+cryptographic commitment $Com_i$ to each row is generated, as well as two
+commitments to the $ID_P$ and \pone{}, respectively to the $ID_R$ and \ptwo{}
+columns.
 
 \begin{table}
 	\centering
@@ -86,6 +86,123 @@ identity permutation.
 	\end{tabular}
 	\caption{Decryption table. $ID_P$ and $ID_R$ reference \emph{P} and \emph{R} tables respectively.}
 	\label{tbl:d_table_full}
+\end{table}
+
+\section{Initializing the \textbf{R} table}
+
+In a last step the election authority initializes $2n$ empty rows of the
+\emph{R} table as shown in table \ref{tbl:r_table_full}.
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		$ID_R$ & $R$ \\
+		\hline
+		1 & \\
+		2 & \\
+		3 & \\
+		4 & \\
+		5 & \\
+		6 & \\
+		\hline
+	\end{tabular}
+	\caption{Results table.}
+	\label{tbl:r_table_full}
+\end{table}
+
+\section{Setup audit}
+
+The final phase of the setup consists of a first audit, by a set of trusted
+auditors. The election authority starts by revealing a subset of the generated
+tables, consisting of the primary ballot ID $ID_P$ in the \emph{P} table, and
+the row commitments in the \emph{D} table, as show in table
+\ref{tbl:setup_audit}. The auditor then gets to pick $n$ rows at random, for
+which the election authority will reveal the full contents. After the reveal
+the table thus looks like \ref{tbl:setup_audit_revealed}. The auditor will then
+verify that all row commitments hold, and that $\ptop \circ \pbottom \circ
+\pone \circ \ptwo = id$ holds.
+
+Thus for every row where the election authority cheats there is a chance of
+$\frac{1}{2}$ of it being caught. For the generalized case where the election
+authority cheats on $f$ out of $n$ ballots, $k$ of which are audited, the
+introductory paper\autocite{fisherPunchscanIntroductionSystem2006} provides an
+upper bound of the election authority not being
+caught of:
+\[
+	[(1 - \frac{k}{n})^f, (1 - \frac{f}{n})^k]
+\]
+
+\begin{table}
+	\centering
+	\begin{subtable}{.5\linewidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_{t}$ & $\pi_{b}$ & $c$ & $Com_{\pi_{t}}$ & $Com_{\pi_{b}}$ \\
+			\hline
+			1 & & & & $C_{1, 1}$ & $C_{1, 2}$ \\
+			2 & & & & $C_{2, 1}$ & $C_{2, 2}$ \\
+			3 & & & & $C_{3, 1}$ & $C_{3, 2}$ \\
+			4 & & & & $C_{4, 1}$ & $C_{4, 2}$ \\
+			5 & & & & $C_{5, 1}$ & $C_{5, 2}$ \\
+			6 & & & & $C_{6, 1}$ & $C_{6, 2}$ \\
+			\hline
+		\end{tabular}
+	\end{subtable}%
+	\begin{subtable}{.5\linewidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+			\hline
+			& & & & & $C_6$ \\
+			& & & & & $C_5$ \\
+			& & & & & $C_2$ \\
+			& & & & & $C_1$ \\
+			& & & & & $C_4$ \\
+			& & & & & $C_3$ \\
+			\hline
+			\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+			\hline
+		\end{tabular}
+	\end{subtable}
+	\caption{Subset of tables released for auditing purposes}
+	\label{tbl:setup_audit}
+\end{table}
+
+\begin{table}
+	\centering
+	\begin{subtable}{.5\linewidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_{t}$ & $\pi_{b}$ & $c$ & $Com_{\pi_{t}}$ & $Com_{\pi_{b}}$ \\
+			\hline
+			1 & & & & $C_{1, 1}$ & $C_{1, 2}$ \\
+			2 & ab & ba & & $C_{2, 1}$ & $C_{2, 2}$ \\
+			3 & & & & $C_{3, 1}$ & $C_{3, 2}$ \\
+			4 & ba & ba & & $C_{4, 1}$ & $C_{4, 2}$ \\
+			5 & ab & ba & & $C_{5, 1}$ & $C_{5, 2}$ \\
+			6 & & & & $C_{6, 1}$ & $C_{6, 2}$ \\
+			\hline
+		\end{tabular}
+	\end{subtable}%
+	\begin{subtable}{.5\linewidth}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+			\hline
+			&                     & &                     &   & $C_6$ \\
+			5 & $\circlearrowright$ & & $\rightarrow$       & 4 & $C_5$ \\
+			2 & $\circlearrowright$ & & $\rightarrow$       & 1 & $C_2$ \\
+			&                     & &                     &   & $C_1$ \\
+			4 & $\rightarrow$       & & $\rightarrow$       & 2 & $C_4$ \\
+			&                     & &                     &   & $C_3$ \\
+			\hline
+			\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+			\hline
+		\end{tabular}
+	\end{subtable}
+	\caption{Subset of tables released for auditing purposes}
+	\label{tbl:setup_audit_revealed}
 \end{table}
 
 \section{Generating permutations}
