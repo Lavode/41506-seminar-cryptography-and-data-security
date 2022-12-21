@@ -35,8 +35,13 @@ def main():
     mapping_file = sys.argv[1]
     results_file = sys.argv[2]
 
+    # Number of abstain votes used for testing purposes, will be subtracted from outcome.
+    test_abstain_count = 0
+    if len(sys.argv) == 4:
+        test_abstain_count = int(sys.argv[3])
+
     questions = load_questions(mapping_file)
-    results = load_results(results_file)
+    results, ballot_count = load_results(results_file)
 
     for prime in results:
         vote_counted = False 
@@ -49,6 +54,9 @@ def main():
         if not vote_counted:
             print(f"ERROR: No clue what to do with prime: {prime}")
 
+    print("Number of ballots submitted: {}".format(ballot_count))
+    print("Number of test-abstain votes: {}".format(test_abstain_count))
+
     for question in questions:
         print("===========================")
         print(question._title)
@@ -56,18 +64,23 @@ def main():
 
         outcome = [(o._title, o._count) for o in question._options]
         for (title, count) in sorted(outcome, key=lambda x: x[1], reverse=True):
+            if title == "Abstain":
+                count -= test_abstain_count
+
             print(f"- {title}: {count}")
         
     print("===========================")
         
 def load_results(path):
     results = []
+    ballot_count = 0
     with open(path, 'rb') as f:
         for l in f.readlines():
+            ballot_count += 1
             primes = l.strip().split(b';')
             results.extend([int(p) for p in primes])
 
-    return results
+    return results, ballot_count
 
 def load_questions(path):
     with open(path, 'rb') as f:
