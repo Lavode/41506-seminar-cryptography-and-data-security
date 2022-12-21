@@ -58,7 +58,7 @@ table \ref{tbl:d_table_full}. This table contains a reference to the \emph{P}
 table by means of the $ID_P$ column, and to the \emph{R} table by means of the
 $ID_R$ column. Both $ID_P$ and $ID_R$ are random and independent permutations
 of the elements $1, 2, \ldots, 2n$. It then chooses \pone{} randomly, and
-calculates \ptwo{} such that $\ptop \circ \pbottom \circ \pone \circ \ptwo =
+calculates \ptwo{} such that $\ptwo \circ \pone \circ \pbottom \circ \ptop =
 id$ yields the identity permutation. To achieve a concise notation,
 $\rightarrow$ stands for the identity permutation over two elements, while
 $\circlearrowright$ stands for the permutation flipping the two elements.
@@ -120,8 +120,8 @@ the row commitments in the \emph{D} table, as show in table
 \ref{tbl:setup_audit}. The auditor then gets to pick $n$ rows at random, for
 which the election authority will reveal the full contents. After the reveal
 the table thus looks like \ref{tbl:setup_audit_revealed}. The auditor will then
-verify that all row commitments hold, and that $\ptop \circ \pbottom \circ
-\pone \circ \ptwo = id$ holds.
+verify that all row commitments hold, and that $\ptwo \circ \pone \circ
+\pbottom \circ \ptop = id$ holds.
 
 Thus for every row where the election authority cheats there is a chance of
 $\frac{1}{2}$ of it being caught. For the generalized case where the election

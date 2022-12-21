@@ -1,0 +1,90 @@
+\chapter{Vote decryption and tallying}
+
+Recall that during the voting process one half of the ballot was scanned. The
+voter's choice is stored in the \emph{Choice} column of the \emph{P} table. It
+is represented either as a number, indicating which of the fields (in some
+canonical order) the voter selected, or as an actual choice under the
+assumption that the voter had had a `canonical' ballot --- that is a ballot
+with $\ptop = \pbottom = id$. In the decryption phase this permuted choice is
+then transformed into the plaintext choice in an auditable way.
+
+\section{Decrypting the vote}
+
+Assume that the voter's plaintex choice was $m$. Then the voter's recorded
+choice is equal to $Choice = (\ptop{} \circ \pbottom{})(m)$. In a first step
+the election authority calculates $\hat{R} = \pone{}(Choice)$, and $R =
+\ptwo{}(\hat{R})$. Thus $R = (\ptwo \circ \pone \circ \pbottom \circ \ptop)(m)
+= id(m) = m$, so the decrypted vote is correct. The election authority can then
+tally the plaintext votes and publish the results.
+
+\section{Decryption audit}
+
+Similarly to the setup audit, the election authority again publishes a subset
+of the \emph{P}, \emph{D} and \emph{R} tables as shown in table
+\ref{tbl:decryption_audit}. The auditor then gets to decide which half of the
+\emph{D} table to reveal. If they choose the left half then $ID_P$ and \pone{}
+gets revealed, otherwise $ID_R$ and \ptwo{}. The auditor then checks that the
+appropriate relation between $Choice$, $\hat{R}$ and $R$ holds, and that the
+appropriate column commitment holds. This has a chance of $\frac{1}{2}$ of
+catching a cheating election authority.
+
+\begin{table}
+	\centering
+	\begin{subtable}{.2\linewidth}
+	\end{subtable}%
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			$ID_P$ & $C$ \\
+			\hline
+			1 & a \\
+			3 & b \\
+			6 & a \\
+			\hline
+		\end{tabular}
+	\begin{subtable}{.6\linewidth}
+		\centering
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ \\
+			\hline
+			  &                     & a &                     &   \\
+			  &                     & b &                     &   \\
+			  &                     & b &                     &   \\
+			\hline
+			\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} \\
+			\hline
+		\end{tabular}
+	\end{subtable}
+	\begin{subtable}{.2\linewidth}
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			$ID_R$ & $R$ \\
+			\hline
+			3 & a \\
+			5 & b \\
+			6 & a \\
+			\hline
+		\end{tabular}
+	\end{subtable}
+	\caption{Subset of tables released for auditing purposes}
+	\label{tbl:decryption_audit}
+\end{table}
+
+\subsection{Lowering success chance of a cheating election authority}
+
+To improve resiliency, the \emph{D} table can be split into independent shards
+containing $k$ rows each, each with their own column commitments. During
+auditing, the auditor can then choose, for each shard, which half to reveal.
+This increases the probability that a cheating election authority is caught,
+respectively limits the number of cheating votes it can get away with with
+probability $\frac{1}{2^n}$ to $nk$.
+
+
+\section{Individual verifiability}
+
+As a last step the election authority publishes the list of scanned ballot
+halves, corresponding to the $Choice$ column of the \emph{P} table. This allows
+each voter to then look up their ballot using its ID, and compare that the
+scanned image matches their physical receipt.
