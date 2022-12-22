@@ -25,8 +25,7 @@ of the \emph{P}, \emph{D} and \emph{R} tables as shown in table
 \emph{D} table to reveal. If they choose the left half then $ID_P$ and \pone{}
 gets revealed, otherwise $ID_R$ and \ptwo{}. The auditor then checks that the
 appropriate relation between $Choice$, $\hat{R}$ and $R$ holds, and that the
-appropriate column commitment holds. This has a chance of $\frac{1}{2}$ of
-catching a cheating election authority.
+appropriate column commitment holds.
 
 \begin{table}
 	\centering
@@ -77,10 +76,6 @@ catching a cheating election authority.
 To improve resiliency, the \emph{D} table can be split into independent shards
 containing $k$ rows each, each with their own column commitments. During
 auditing, the auditor can then choose, for each shard, which half to reveal.
-This increases the probability that a cheating election authority is caught,
-respectively limits the number of cheating votes it can get away with with
-probability $\frac{1}{2^n}$ to $nk$.
-
 
 \section{Individual verifiability}
 
