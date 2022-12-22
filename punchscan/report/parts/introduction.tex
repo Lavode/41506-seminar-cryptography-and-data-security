@@ -1,27 +1,60 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-This report provides an overview of the Punchscan voting system. It aims to
-explain the utilized concepts, point out shortcomings, and highlight some of
-the attacks which have been published since.
+This report aims to provide an overview of the Punchscan voting system, a
+paper-ballot-based voting system providing voters with receipts allowing for
+individual verifiability without sacrificing voter privacy. Chapter
+\ref{ch:ballot_design_and_voting} will start by discussing the ballot layout as
+well as the voting process from the point of view of the voter. Chapter
+\ref{ch:setup} will describe the work performed by the election authority and
+auditors ahead of time. Chapter \ref{ch:tally} will describe the tally phase
+including its audits. Finally chapter \ref{ch:security} will discuss the
+integrity and privacy goals --- as well as how and if they are achieved --- of
+Punchscan. 
 
-% TODO elaborate why we start with this, rather than what is done in setup phase.
-Chapter \ref{ch:ballot_design_and_voting} will start by introducing the layout
-of the ballot as well as the process of voting from the voter's point of view.
+% TODO don't like this sentence
+The report is heavily based on the introductory paper to Punchscan by Fisher et
+al\autocite{fisherPunchscanIntroductionSystem2006}, with other work being
+referenced where appropriate.
 
-% TODO elaborate on structure of report.
+\section{Involved parties}
 
-\section{Notation}
+People participating in the Punchscan election system can be grouped into one
+of three categories.
+\begin{description}
+\item[Voters] Voters participate in the election. They are assumed to be able
+to authenticate themselves towards the election authority. Malicious voters may
+attempt to learn of others' vote, or sell their own vote to third parties.
+\item[Election authority] The election authority consists of a single person
+--- or a set of persons in a threshold setting --- which handles the setup and
+tally phases of the election. A malicious election authority may attempt to
+influence the outcome of the election. In a broader sense the election
+authority also includes poll workers assisting voters. The election authority
+is assumed to be able to generate secret key material at will, and share it
+securely with auditors where required.
+\item[Auditors] Auditors are a set of people tasked with ensuring vote
+integrity. At least one auditor is assumed to be honest.
+\end{description}
+
+\section{Notation and terminology}
 
 \subsection{Permutations}
 
 Permutations will be denoted by the letter $\pi$, with an index describing
 their purpose. As an example, $\pi_{top}$ will be used to refer to the
-permutation of the ballot's top page. We will use the standard one-line
-notation where, for a permutation over elements $\{a, b, c\}$ with the canonical
-ordering, $\pi = cba$ refers to a permutation $\pi$ such that $\pi(a) = c$,
-$\pi(b) = b$, and $\pi(c) = a$. For a permutation over two elements we also use
-the notation as in the paper, where $\rightarrow$ is the identity
-permutation and $\circlearrowright$ is the permutation flipping the two
-elements. Composition of permutations is denoted as $\pi_1 \circ \pi_2$,
-evaluated right-to-left.
+permutation of the ballot's top page. The standard one-line notation will be
+used, where $\pi = cba$ refers to a permutation $\pi$ such that $\pi(a) = c,
+\pi(b) = b, \pi(c) = a$. For permutations over two elements the notation from
+the Punchscan paper is adopted, where $\rightarrow$ is the identity permutation
+and $\circlearrowright$ is the permutation flipping the two elements.
+Composition of permutations is denoted as $\pi_1 \circ \pi_2$, evaluated
+right-to-left.
+
+\subsection{Representation of data}
+
+The Punchscan system generates and manipulates a fair bit of data, which will
+be described in terms of relational databases such as `tables', `rows',
+`columns', `primary keys', `foreign keys' and so on. This does not imply a
+requirement for specific implementations of Punchscan to use a relational
+storage system, although no clear benefit to using non-relational storage is
+apparent as the data is inherently relational.

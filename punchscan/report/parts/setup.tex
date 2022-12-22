@@ -1,37 +1,45 @@
 \chapter{Setup}
+\label{ch:setup}
 
-During the setup phase, the election authority will initialize the contents of
-three tables. This will be followed by an audit, to ensure honesty of the
+During the setup phase the election authority will initialize the contents of
+three tables. This will be followed by an audit to ensure honesty of the
 election authority. The three tables which are initialized are referred to as
 the \textbf{P}, \textbf{D} and \textbf{R} tables:
 \begin{description}
-\item[\emph{P}rint table] Contains all information which is required to print
-the ballots, along with information for auditing purposes.
-\item[\emph{D}ecryption table] Contains all information required to decrypt the
-voter's encrypted vote in the tally phase, along with information for auditing
-purposes.
-\item[\emph{R}esults table] Contains outcome of election.
+\item[\emph{P}rint table] The print table contains all information which is
+	required to print the ballots, along with information for auditing
+		purposes.
+\item[\emph{D}ecryption table] The decryption table contains all information
+	required to decrypt the voter's encrypted vote in the tally phase,
+		along with information for auditing purposes.
+\item[\emph{R}esults table] The results table contains the outcome of election.
 \end{description}
 
-For the following, we will assume an election with one question, answer
-possibilities $a$ and $b$, voted on by $n$ voters.
+For the following we will assume an election with one question and two answers
+$a$ and $b$, voted on by $n$ voters.
 
 \section{Election authority in a threshold setting}
 
-For the purpose of this chapter we assume the election authority to be a single entity, in full possession of their private keys. In a real-life deployment it would be prudent to utilize some form of threshold cryptography to spread the trust across multiple parties.
+For the purpose of this chapter we assume the election authority to be a single
+entity, in full possession of their private keys. In a real-life deployment it
+would be prudent to utilize some form of threshold cryptography to spread this
+trust across multiple parties.
 
 \section{Initializing the \textbf{P} table}
 
-The election authority first populates $2n$ rows of the \emph{P} table as shown
+The election authority first populates $2n$ rows of the \textbf{P} table as shown
 in table \ref{tbl:p_table_full}. This table is indexed by a primary key $ID_P$,
 corresponding to the ballot ID which will be printed on both pages of the
 ballot. It then picks two random permutations \ptop{} and \pbottom{},
 corresponding to the permutations of the top and bottom pages respectively.
 Permutations will be shown explicitly. In an actual implementation they might
-however be chosen as shown in section \ref{sec:generating_permutations}.
+however be chosen as shown in section \ref{sec:generating_permutations}. The
+\emph{Choice} column is left empty, and will be used to store the voter's
+permuted choice later on.
 
 For each row it then calculates two cryptographic commitments, \ctop{} and
-\cbottom{}, to \ptop{} and \pbottom{} respectively.
+\cbottom{}, to \ptop{} and \pbottom{} respectively. The utilized commitment
+scheme is described in section \ref{sec:commitment_scheme}.
 
 \begin{table}
 	\centering
@@ -47,83 +55,92 @@ For each row it then calculates two cryptographic commitments, \ctop{} and
 		6 & ba & ab & & $C_{6, 1}$ & $C_{6, 2}$ \\
 		\hline
 	\end{tabular}
-	\label{tbl:p_table_full}
 	\caption{Print table}
+	\label{tbl:p_table_full}
 \end{table}
 
 \section{Initializing the \textbf{D} table}
 
-The election authority then populates $2n$ rows of the \emph{D} table as per
-table \ref{tbl:d_table_full}. This table contains a reference to the \emph{P}
-table by means of the $ID_P$ column, and to the \emph{R} table by means of the
-$ID_R$ column. Both $ID_P$ and $ID_R$ are random and independent permutations
-of the elements $1, 2, \ldots, 2n$. It then chooses \pone{} randomly, and
-calculates \ptwo{} such that $\ptwo \circ \pone \circ \pbottom \circ \ptop =
-id$ yields the identity permutation. To achieve a concise notation,
-$\rightarrow$ stands for the identity permutation over two elements, while
-$\circlearrowright$ stands for the permutation flipping the two elements.
+The election authority then populates $2n$ rows of the \textbf{D} table as per
+table \ref{tbl:d_table_full}. This table contains a reference to the \textbf{P}
+table by means of the $ID_P$ column, and to the \textbf{R} table by means of
+the $ID_R$ column. Both $ID_P$ and $ID_R$ are random and independent
+permutations of the elements $1, 2, \ldots, 2n$. It then chooses \pone{}
+randomly, and calculates \ptwo{} such that $\ptwo \circ \pone \circ \pbottom
+\circ \ptop = id$ yields the identity permutation.  The $\hat{R}$ column is
+left empty during the setup phase and will be used during decryption. 
 
-The $\hat{R}$ column is left empty during the setup phase. As a last step a
-cryptographic commitment $Com_i$ to each row is generated, as well as two
-commitments to the $ID_P$ and \pone{}, respectively to the $ID_R$ and \ptwo{}
-columns.
+Finally a  cryptographic commitment $Com_i$ to each row is generated, as well
+as two cryptographic commitments $Com_{ID_P, \pone}$ to the content of columns
+$ID_P$ and \pone{}, and $Com_{\ptwo, ID_R}$ to the content of columns \ptwo{}
+and $ID_R$.
 
-\begin{table}
-	\centering
-	\begin{tabular}{|c|c|c|c|c|c|}
-		\hline
-		$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
-		\hline
-		6 & $\rightarrow$       & & $\circlearrowright$ & 5 & $C_6$ \\
-		5 & $\circlearrowright$ & & $\rightarrow$       & 4 & $C_5$ \\
-		2 & $\circlearrowright$ & & $\rightarrow$       & 1 & $C_2$ \\
-		1 & $\circlearrowright$ & & $\circlearrowright$ & 3 & $C_1$ \\
-		4 & $\rightarrow$       & & $\rightarrow$       & 2 & $C_4$ \\
-		3 & $\rightarrow$       & & $\circlearrowright$ & 6 & $C_3$ \\
-		\hline
-		\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
-		\hline
-	\end{tabular}
-	\caption{Decryption table. $ID_P$ and $ID_R$ reference \emph{P} and \emph{R} tables respectively.}
-	\label{tbl:d_table_full}
+\begin{table}[h]
+	\begin{subtable}{.6\linewidth}
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			$ID_P$ & $\pi_1$ & $\hat{R}$ & $\pi_2$ & $ID_R$ & $Com_{i}$ \\
+			\hline
+			6 & $\rightarrow$       & & $\circlearrowright$ & 5 & $C_6$ \\
+			5 & $\circlearrowright$ & & $\rightarrow$       & 4 & $C_5$ \\
+			2 & $\circlearrowright$ & & $\rightarrow$       & 1 & $C_2$ \\
+			1 & $\circlearrowright$ & & $\circlearrowright$ & 3 & $C_1$ \\
+			4 & $\rightarrow$       & & $\rightarrow$       & 2 & $C_4$ \\
+			3 & $\rightarrow$       & & $\circlearrowright$ & 6 & $C_3$ \\
+			\hline
+			\multicolumn{2}{|c|}{$Com_{ID_P, \pi_1}$} &   & \multicolumn{2}{c|}{$Com_{\pi_2, ID_R}$} & \\
+			\hline
+		\end{tabular}
+		\caption{Decryption table}
+		\label{tbl:d_table_full}
+	\end{subtable}%
+	\begin{subtable}{.4\linewidth}
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			$ID_R$ & $R$ \\
+			\hline
+			1 & \\
+			2 & \\
+			3 & \\
+			4 & \\
+			5 & \\
+			6 & \\
+			\hline
+			\multicolumn{2}{l}{} % Ugly hack to vertically align the two tables.
+		\end{tabular}
+		\caption{Results table}
+		\label{tbl:r_table_full}
+	\end{subtable}
+	\caption{Decryption and results tables}
 \end{table}
 
 \section{Initializing the \textbf{R} table}
 
 In a last step the election authority initializes $2n$ empty rows of the
-\emph{R} table as shown in table \ref{tbl:r_table_full}.
+\textbf{R} table as shown in table \ref{tbl:r_table_full}.
 
 \begin{table}
-	\centering
-	\begin{tabular}{|c|c|}
-		\hline
-		$ID_R$ & $R$ \\
-		\hline
-		1 & \\
-		2 & \\
-		3 & \\
-		4 & \\
-		5 & \\
-		6 & \\
-		\hline
-	\end{tabular}
-	\caption{Results table.}
-	\label{tbl:r_table_full}
 \end{table}
 
 \section{Setup audit}
 
-The final phase of the setup consists of a first audit, by a set of trusted
-auditors. The election authority starts by revealing a subset of the generated
-tables, consisting of the primary ballot ID $ID_P$ in the \emph{P} table, and
-the row commitments in the \emph{D} table, as show in table
+The final phase of the setup consists of a first audit by a set of trusted
+auditors. The election authority reveals the primary ballot ID $ID_P$ and
+commitments of the \textbf{P} table, as well as the row and column commitments
+of the \textbf{D} table. The revealed data is shown in table
 \ref{tbl:setup_audit}. The auditor then gets to pick $n$ rows at random, for
-which the election authority will reveal the full contents. After the reveal
-the table thus looks like \ref{tbl:setup_audit_revealed}. The auditor will then
-verify that all row commitments hold, and that $\ptwo \circ \pone \circ
-\pbottom \circ \ptop = id$ holds.
+which the election authority will reveal the full contents, including what is
+required to open the commitments. An example of a revealed table is shown in
+table \ref{tbl:setup_audit_revealed}. The auditor will then verify that all row
+commitments are correct, and that $\ptwo \circ \pone \circ \pbottom \circ \ptop
+= id$ holds.
 
-\begin{table}
+All rows which were fully revealed during this audit are considered spoiled,
+and will not be used anymore in subsequent parts of the voting scheme.
+
+\begin{table}[h]
 	\centering
 	\begin{subtable}{.5\linewidth}
 		\begin{tabular}{|c|c|c|c|c|c|}
@@ -208,7 +225,7 @@ way that three properties hold:
 \end{itemize}
 
 The introductory paper outlines two ways by which such permutations can be
-constructed in section 8 \autocite{fisherPunchscanIntroductionSystem2006}. The
+constructed \autocite[section 8]{fisherPunchscanIntroductionSystem2006}. The
 first, shown in section \ref{sec:permutations_via_symmetric_cipher} is used to
 permute the rows of the $D$ and $R$ tables. The second, shown in section
 \ref{sec:permutations_via_shifts} is used to permute the top and bottom pages
@@ -222,7 +239,9 @@ Initialize the first column to values $1, 2, \ldots, n$. Fill the second column
 with $Enc_K(1), Enc_K(2), \ldots, Enc_K(n)$, where $Enc_K(i)$ is the result of
 encrypting $i$ with key $K$ --- using a standard padding scheme if required.
 Sort the table by the second column using some canonical ordering. Then, the
-order of the numbers in the first column defines a permutation.
+order of the numbers in the first column defines a permutation
+indistinguishable from a truly random permutation, given standard assumptions
+placed on symmetric ciphers.
 
 \subsection{Generate permutation over $n$ elements as combination of two cyclic shifts}
 \label{sec:permutations_via_shifts}
@@ -231,8 +250,54 @@ For the $\pi_1, \pi_2, \pi_{top}, \pi_{bottom}$ permutations the authors note
 that a simpler consruction is sufficient to generate all possible mappings
 between answer possibilities and symbols. They propose to generate two random
 numbers, and cyclically shift the list of answer possibilities by one of the
-random numbers, and the list of answer symbols by the other.
+random numbers, and the list of answer symbols by the other. This will not
+generate all possible permutations as e.g. the relative order of elements is
+preserved.
 
-This will clearly not generate all possible permutations of answer choices to symbols, but...
-% TODO but what? :)
+\section{Commitment scheme}
 
+The introductory paper defines their own custom commitment scheme based on the
+AES block cipher\autocite[section 9]{fisherPunchscanIntroductionSystem2006}.
+Let $K_1, K_2$ be two AES-128 keys. Let $C$ be a public 128-bit constant. Let
+$Enc_K(m)$ denote the result of encrypting a 128-bit message $m$ using the key
+$K$, $Dec_K(c)$ the result of decrypting a 128-bit ciphertext $c$ using the key
+$K$. Let $||$ denote binary concatenation.
+
+\subsection{Key-derivation function}
+
+They first define a custom key-derivation function, shown in algorithm
+\ref{alg:kdf}.
+
+\begin{algorithm}
+	\begin{algorithmic}
+		\State \textbf{Input} $m$
+		\State $m_{128} \gets \text{First 128 bits of } m$ \Comment{Pad with zeroes if $m$ shorter than 128 bits}
+		\State $K_m \gets Dec_{K_1}(C \oplus Enc_{K_2}(C \oplus Enc_{K_1}(m_{128})))$
+		\State \textbf{Return} $K_m$
+	\end{algorithmic}
+	\caption{$KDF(m)$}
+	\label{alg:kdf}
+\end{algorithm}
+
+\subsection{Commitment scheme}
+
+They then define a commitment scheme as shown in algorithm \ref{alg:commit}.
+
+\begin{algorithm}
+	\begin{algorithmic}
+		\State \textbf{Input} $m$
+		\State $K_m \gets \Call{KDF}{m}$
+		\State $s \gets Enc_{K_m}(C)$
+		\State $h_1 \gets \Call{SHA-256}{m || s}$
+		\State $h_2 \gets \Call{SHA-256}{m || Enc_{K_m}(h_1)}$ \Comment{AES in ECB mode with PKCS\#5 padding}
+		\State \textbf{Return} $(h_1, h_2)$
+	\end{algorithmic}
+	\caption{$Commit(m)$}
+	\label{alg:commit}
+\end{algorithm}
+
+\subsection{Opening commitments}
+
+While not described in the paper, one can surmise that opening the commitments
+is done by releasing $K_m$. As generation of commitments is deterministic, this
+will allow recalculating the commitment and comparing for equality.

@@ -1,7 +1,8 @@
 \chapter{Vote decryption and tallying}
+\label{ch:tally}
 
 Recall that during the voting process one half of the ballot was scanned. The
-voter's choice is stored in the \emph{Choice} column of the \emph{P} table. It
+voter's choice is stored in the \textbf{Choice} column of the \textbf{P} table. It
 is represented either as a number, indicating which of the fields (in some
 canonical order) the voter selected, or as an actual choice under the
 assumption that the voter had had a `canonical' ballot --- that is a ballot
@@ -20,9 +21,9 @@ tally the plaintext votes and publish the results.
 \section{Decryption audit}
 
 Similarly to the setup audit, the election authority again publishes a subset
-of the \emph{P}, \emph{D} and \emph{R} tables as shown in table
+of the \textbf{P}, \textbf{D} and \textbf{R} tables as shown in table
 \ref{tbl:decryption_audit}. The auditor then gets to decide which half of the
-\emph{D} table to reveal. If they choose the left half then $ID_P$ and \pone{}
+\textbf{D} table to reveal. If they choose the left half then $ID_P$ and \pone{}
 gets revealed, otherwise $ID_R$ and \ptwo{}. The auditor then checks that the
 appropriate relation between $Choice$, $\hat{R}$ and $R$ holds, and that the
 appropriate column commitment holds.
@@ -73,13 +74,13 @@ appropriate column commitment holds.
 
 \subsection{Lowering success chance of a cheating election authority}
 
-To improve resiliency, the \emph{D} table can be split into independent shards
+To improve resiliency, the \textbf{D} table can be split into independent shards
 containing $k$ rows each, each with their own column commitments. During
 auditing, the auditor can then choose, for each shard, which half to reveal.
 
 \section{Individual verifiability}
 
 As a last step the election authority publishes the list of scanned ballot
-halves, corresponding to the $Choice$ column of the \emph{P} table. This allows
+halves, corresponding to the $Choice$ column of the \textbf{P} table. This allows
 each voter to then look up their ballot using its ID, and compare that the
 scanned image matches their physical receipt.

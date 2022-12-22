@@ -11,6 +11,10 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
+% Algorithms :)
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
 % Subtables (and other goodies)
 \usepackage{subcaption}
 
@@ -69,7 +73,7 @@
 \newcommand{\printdate}{\today}
 
 \subject{\lecture}
-\title{Punchscan: Digital voting scheme with paper-based receipts}
+\title{Punchscan: Voting scheme with paper-based receipts}
 
 \author{Michael Senn \maillink{michael.senn@students.unibe.ch} --- 16-126-880}
 
@@ -84,22 +88,19 @@
 \newcommand{\pbottom}{\ensuremath{\pi_{\text{bottom}}}}
 \newcommand{\ctop}{\ensuremath{Com(\pi_{\text{top}})}}
 \newcommand{\cbottom}{\ensuremath{Com(\pi_{\text{bottom}})}}
-\newcommand{\pone}{\ensuremath{\pi_{\text{one}}}}
-\newcommand{\ptwo}{\ensuremath{\pi_{\text{two}}}}
+\newcommand{\pone}{\ensuremath{\pi_1}}
+\newcommand{\ptwo}{\ensuremath{\pi_2}}
 
 \begin{document}
 
 \maketitle
-
-\begin{abstract}
-	Lorem ipsum dolor si amet, et coniunctur.
-\end{abstract}
 
 \include{parts/introduction}
 \include{parts/ballot_design_and_voting}
 \include{parts/setup}
 \include{parts/tally}
 \include{parts/security}
+\include{parts/conclusion}
 
 \printbibliography
 

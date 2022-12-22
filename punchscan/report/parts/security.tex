@@ -1,4 +1,5 @@
 \chapter{Privacy and security}
+\label{ch:security}
 
 Punchscan intends to provide two measures of security: Voters' privacy and vote
 integrity. This chapter will show to what extend it succeeds in doing that, and
@@ -17,7 +18,7 @@ permitting the use of video-capturing devices in voting booths.
 \subsection{Privacy against a malicious election authority}
 
 Punchscan does not achieve any form of privacy against a malicious election
-authority. Having full access to the \emph{P} table means that they can
+authority. Having full access to the \textbf{P} table means that they can
 reconstruct any voter's plaintext vote. Assuming voting booth workers to be
 compromised, this then leaks every voter's vote.
 
@@ -27,16 +28,16 @@ After having voted, a voter is left with one half of the ballot. A third party
 will then, at most, have access to the following:
 \begin{itemize}
 \item For every ballot, either \ptop{} or \pbottom{} due to the scanned receipts being published along with their ballot ID
-\item For each shard of the \emph{D} table, either the \pone{} or the \ptwo{}
+\item For each shard of the \textbf{D} table, either the \pone{} or the \ptwo{}
 permutations
-\item For each shard of the \emph{D} table, either the $ID_P$ link to the
-\emph{P} table, or the $ID_R$ link to the \emph{R} table
+\item For each shard of the \textbf{D} table, either the $ID_P$ link to the
+\textbf{P} table, or the $ID_R$ link to the \textbf{R} table
 \item The full results table
 \end{itemize}
 
 Thus they will, for any given ballot, be lacking one of the ballot
 permutations, one of the decryption permutations, and one of the chain of
-mappings from \emph{P} to \emph{D} to \emph{R} tables. Hence they will not be
+mappings from \textbf{P} to \textbf{D} to \textbf{R} tables. Hence they will not be
 able to learn the plaintext vote of any ballot.
 
 \subsection{Vote-buying attack}
@@ -88,8 +89,8 @@ authority --- at least during the setup and decryption phases.
 
 \subsection{Setup-phase audit}
 
-Recall that during the setup phase a certain number of rows of the \emph{P} and
-\emph{D} tables are spoiled and verified. Thus for every row where the election authority 
+Recall that during the setup phase a certain number of rows of the \textbf{P} and
+\textbf{D} tables are spoiled and verified. Thus for every row where the election authority 
 was dishonest there is a chance of $\frac{1}{2}$ of it being caught. Consider the
 generalized case where the election authority cheats on $f$ out of $n$ ballots,
 with $k$ being audited. The introductory paper shows that an upper bound of the
@@ -104,7 +105,7 @@ ballots to total ballots.
 
 \subsection{Decryption-phase audit}
 
-Recall that during decryption one half of each shard of the \emph{D} table is
+Recall that during decryption one half of each shard of the \textbf{D} table is
 revealed. To minimze its chance of being caught, a cheating election authority
 will spread the votes on which it cheated across as few shards as possible.
 Assuming $k$ shards were tempered with then this audit has a chance of
@@ -127,7 +128,7 @@ job.
 
 One issue not addressed by Punchscan is the one of ballot integrity.
 Fundamentally one must ensure that the printed ballots correspond to the the
-remainders of the \emph{P} table after the setup audit. The Punchscan paper
+remainders of the \textbf{P} table after the setup audit. The Punchscan paper
 advises that voters should, the moment they receive the ballot, verify that
 their ballot's commitment matches one of the published commitments. They do not
 however provide any way in which a voter --- equipped with pen and paper ---
@@ -141,16 +142,18 @@ al\autocite{kelseyAttackingPaperBasedE2E2010} mention it in passing.
 
 \subsection{Malicious poll workers}
 
-Kelsey et al\autocite{kelseyAttackingPaperBasedE2E2010} also discuss a specific
-misprinting attack on Punchscan where, when a voter announced which half of
-the ballot they intend to keep, the poll worker hands them a ballot where the
-half which will be destroyed is manipulated. As discussed the voter is unable
-to verify the commitments in the voting booth. When they then leave the voting
-booth, the only evidence of having cheated --- the manipulated half of the
-ballot --- is destroyed. To prevent this one would have to make poll workers
-commit to which ballot to hand out before the voter announces which page to
-keep. At the same time one must still ensure that a voter does not see their
-future ballot until after they commited to which half to keep.
+Kelsey et al also discuss a specific misprinting attack on
+Punchscan\autocite[chapter 3]{kelseyAttackingPaperBasedE2E2010} where, when a
+voter announced which half of the ballot they intend to keep, the poll worker
+hands them a ballot where the half which will be destroyed is manipulated. As
+discussed the voter is unable to verify the commitments in the voting booth.
+When they then leave the voting booth, the only evidence of having cheated ---
+the manipulated half of the ballot --- is destroyed. To prevent this one would
+have to make poll workers commit to which ballot to hand out before the voter
+announces which page to keep. At the same time one must still ensure that a
+voter does not see their future ballot until after they commited to which half
+to keep. Even more ways by which a cheating election authority can influence
+the vote are discussed by Lundin et al\autocite{lundinTearDestroyChain2012}.
 
 \section{Attacking cryptographic primitives}
 
