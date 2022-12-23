@@ -9,7 +9,7 @@ in that electronic systems have started to play a role in the voting process.
 One such system is Punchscan, published in the early 2000s. It is a voting
 system using paper ballots, yet heavily relies on cryptographic operations to
 provide voter privacy, resilience towards malicious parties, and individual
-verifiability. This report aims to provide an overview over Punchscan's
+verifiability. This report aims to provide an overview of Punchscan's
 workings and shortcomings.
 
 Chapter \ref{ch:ballot_design_and_voting} will start by discussing the ballot
@@ -32,14 +32,14 @@ of three categories.
 \begin{description}
 \item[Voters] Voters participate in the election. They are assumed to be able
 to authenticate themselves towards the election authority. Malicious voters may
-attempt to learn of others' vote, or sell their own vote to third parties.
+attempt to learn of others' votes, or sell their own vote to third parties.
 \item[Election authority] The election authority consists of a single person
 --- or a set of persons in a threshold setting --- which handles the setup and
 tally phases of the election. A malicious election authority may attempt to
 influence the outcome of the election. In a broader sense the election
 authority also includes poll workers assisting voters. The election authority
-is assumed to be able to generate secret key material at will, and share it
-securely with auditors where required.
+is assumed to be able to generate key material at will, and share it
+securely with other parties where required.
 \item[Auditors] Auditors are a set of people tasked with ensuring vote
 integrity. At least one auditor is assumed to be honest.
 \end{description}

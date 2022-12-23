@@ -10,18 +10,18 @@ the \textbf{P}, \textbf{D} and \textbf{R} tables:
 	required to print the ballots, along with information for auditing
 		purposes.
 \item[\emph{D}ecryption table] The decryption table contains all information
-	required to decrypt the voter's encrypted vote in the tally phase,
+	required to decrypt the voters' encrypted votes in the tally phase,
 		along with information for auditing purposes.
 \item[\emph{R}esults table] The results table contains the outcome of election.
 \end{description}
 
-For the following we will assume an election with one question and two answers
-$a$ and $b$, voted on by $n$ voters.
+For the following an election with one question and two answers $a$ and $b$,
+voted on by $n$ voters, is assumed.
 
 \section{Election authority in a threshold setting}
 
-For the purpose of this chapter we assume the election authority to be a single
-entity, in full possession of their private keys. In a real-life deployment it
+In this chapter the election authority is assumed to consist of a single
+person, in full posession of their private keys. In a real-life deployment it
 would be prudent to utilise some form of threshold cryptography to spread this
 trust across multiple parties.
 
@@ -33,7 +33,7 @@ $ID_P$, corresponding to the ballot ID which will be printed on both pages of
 the ballot. It then picks two random permutations \ptop{} and \pbottom{},
 corresponding to the permutations of the top and bottom pages respectively.
 Here permutations will be shown explicitly, but in actual implementations they
-might be chosen as shown in section \ref{sec:generating_permutations}. The
+might be chosen as detailed in section \ref{sec:generating_permutations}. The
 \emph{Choice} column is left empty, and will be used to store the voter's
 permuted choice later on.
 
@@ -71,9 +71,9 @@ randomly, and calculates \ptwo{} such that $\ptwo \circ \pone \circ \pbottom
 left empty during the setup phase and will be used during decryption. 
 
 Finally a  cryptographic commitment $Com_i$ to each row is generated, as well
-as two cryptographic commitments $Com_{ID_P, \pone}$ to the content of columns
-$ID_P$ and \pone{}, and $Com_{\ptwo, ID_R}$ to the content of columns \ptwo{}
-and $ID_R$.
+as a cryptographic commitments $Com_{ID_P, \pone}$ to the content of columns
+$ID_P$ and \pone{}, and a commitment $Com_{\ptwo, ID_R}$ to the content of
+columns \ptwo{} and $ID_R$.
 
 \begin{table}[h]
 	\begin{subtable}{.6\linewidth}
@@ -208,9 +208,22 @@ and will not be used anymore in subsequent parts of the voting scheme.
 			\hline
 		\end{tabular}
 	\end{subtable}
-	\caption{Subset of tables released for auditing purposes}
+	\caption{Subset of tables released for auditing purposes, after auditor chose to reveal records for ballots $2$, $4$ and $5$}
 	\label{tbl:setup_audit_revealed}
 \end{table}
+
+\section{Supporting ballots with multiple questions}
+
+Support for multi-question ballots is straight-forward, and can be done in one
+of two ways. Either separate permutations are used for each question, in which
+case each question will have multiple rows in the \textbf{P} and \textbf{D}
+tables. Alternatively all questions share the same permutations.
+
+Sharing the same permutation means that the cross-question relationships are
+preserved. This can be desireable such as when picking one answer disqualifies
+a voter from picking a specific answer on another question. It can also be
+undesireable as it leaks information, in which case separate permutations
+should be used.
 
 \section{Generating permutations}
 \label{sec:generating_permutations}
@@ -308,8 +321,8 @@ will allow recalculating it and comparing for equality.
 The described commitment scheme requires the message $m$ to be a byte sequence.
 The paper thus describes how to construct this $m$ for the specific usages,
 such as committing to \ptop{}. They construct $m$ as the concatenation of a
-constant value likely functioning as a domain separation parameter, and a
-binary encoding of the actual object being contributed to.
+constant value specific to the object at hand, likely functioning as a domain
+separation parameter, and a binary encoding of the object being committed to.
 
 No justification is provided why a custom commitment scheme is used, nor are
 there formal proofs for its correctness and security.

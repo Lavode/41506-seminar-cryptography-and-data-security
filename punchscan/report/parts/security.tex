@@ -2,8 +2,8 @@
 \label{ch:security}
 
 Punchscan intends to provide two measures of security: Voters' privacy and vote
-integrity. This chapter will show to what extend it succeeds in doing that, and
-what its limitations are.
+integrity. This chapter will show to what extend it succeeds in doing that,
+what its limitations are, and point out a few specific attacks.
 
 \section{Voter privacy}
 
@@ -19,8 +19,8 @@ permitting the use of video-capturing devices in voting booths.
 
 Punchscan does not achieve any form of privacy against a malicious election
 authority. Having full access to the \textbf{P} table means that they can
-reconstruct any voter's plaintext vote. Assuming voting booth workers to be
-compromised, this then leaks every voter's vote.
+reconstruct any ballot's plaintext vote. If voting booth workers are compromised
+as well, then the vote can even be linked to a person's identity.
 
 \subsection{Privacy against third parties}
 
@@ -89,15 +89,16 @@ authority --- at least during the setup and decryption phases.
 
 \subsection{Setup-phase audit}
 
-Recall that during the setup phase a certain number of rows of the \textbf{P} and
-\textbf{D} tables are spoiled and verified. Thus for every row where the election authority 
-was dishonest there is a chance of $\frac{1}{2}$ of it being caught. Consider the
-generalised case where the election authority cheats on $f$ out of $n$ ballots,
-with $k$ being audited. The introductory paper shows that an upper bound of the
-election authority not being caught is given by:
+Recall that during the setup phase a certain number of rows of the \textbf{P}
+and \textbf{D} tables are spoiled and verified. Thus for every row where the
+election authority was dishonest there is a chance of $\frac{1}{2}$ of it being
+caught. Consider the generalised case where the election authority cheats on
+$f$ out of $n$ ballots, with $k$ being audited. The Punchscan paper
+shows\autocite[section 7.3]{fisherPunchscanIntroductionSystem2006} that an upper
+bound of the election authority not being caught is given by:
 
 \[
-	[(1 - \frac{k}{n})^f, (1 - \frac{f}{n})^k]
+	\left[\left(1 - \frac{k}{n}\right)^f, \left(1 - \frac{f}{n}\right)^k\right]
 \]
 
 This bound can be made arbitrarily small by increasing the ratio of audited
@@ -109,11 +110,11 @@ Recall that during decryption one half of each shard of the \textbf{D} table is
 revealed. To minimise its chance of being caught, a cheating election authority
 will spread the votes on which it cheated across as few shards as possible.
 Assuming $k$ shards were tempered with then this audit has a chance of
-$\frac{1}{2^k}$ of not detecting this. Both this probability, as well as the
+$(\frac{1}{2})^k$ of not detecting this. Both this probability, as well as the
 significance (in terms of tampered-with votes) of a single tampered-with shard
 not being caught, can be lowered by decreasing the shard size. In the extreme
 case one picks a shard size of $1$, at which points $k$ tampered votes have a
-probability of $\frac{1}{2^k}$ of not being detected.
+probability of $(\frac{1}{2})^k$ of not being detected.
 
 \subsection{Individual verifiability}
 
@@ -128,11 +129,11 @@ job.
 
 One issue not addressed by Punchscan is the one of ballot integrity.
 Fundamentally one must ensure that the printed ballots correspond to the the
-remainders of the \textbf{P} table after the setup audit. The Punchscan paper
-advises that voters should, the moment they receive the ballot, verify that
-their ballot's commitment matches one of the published commitments. They do not
-however provide any way in which a voter --- equipped with pen and paper ---
-can do so in the few minutes they spend in a voting booth.
+remainders of the \textbf{P} table after the setup-phase audit. The Punchscan
+paper advises that voters should, the moment they receive the ballot, verify
+that their ballot's commitment matches one of the published commitments. They
+do not however provide any way in which a voter --- equipped with pen and paper
+--- can do so in the few minutes they spend in a voting booth.
 
 An alternative might be to introduce an additional audit phase, during which a
 fraction of printed ballots is audited. The remaining unspoiled ballots would
