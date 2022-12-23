@@ -1,20 +1,28 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-This report aims to provide an overview of the Punchscan voting system, a
-paper-ballot-based voting system providing voters with receipts allowing for
-individual verifiability without sacrificing voter privacy. Chapter
-\ref{ch:ballot_design_and_voting} will start by discussing the ballot layout as
-well as the voting process from the point of view of the voter. Chapter
-\ref{ch:setup} will describe the work performed by the election authority and
-auditors ahead of time. Chapter \ref{ch:tally} will describe the tally phase
-including its audits. Finally chapter \ref{ch:security} will discuss the
-integrity and privacy goals --- as well as how and if they are achieved --- of
-Punchscan. 
+In the course of history, many different voting systems have been designed and
+used. They differ in their trust models, their usability and other aspects. In
+the last decades, ongoing digitalization has also influenced election systems
+in that electronic systems have started to play a role in the voting process.
+
+One such system is Punchscan, published in the early 2000s. It is a voting
+system using paper ballots, yet heavily relies on cryptographic operations to
+provide voter privacy, resilience towards malicious parties, and individual
+verifiability. This report aims to provide an overview over Punchscan's
+workings and shortcomings.
+
+Chapter \ref{ch:ballot_design_and_voting} will start by discussing the ballot
+layout as well as the voting process from the point of view of the voter.
+Chapter \ref{ch:setup} will describe the work performed by the election
+authority and auditors ahead of time. Chapter \ref{ch:tally} will describe the
+tally phase including its audits. Finally chapter \ref{ch:security} will
+discuss the integrity and privacy goals --- as well as how and if they are
+achieved --- of Punchscan. 
 
 % TODO don't like this sentence
 The report is heavily based on the introductory paper to Punchscan by Fisher et
-al\autocite{fisherPunchscanIntroductionSystem2006}, with other work being
+al.\autocite{fisherPunchscanIntroductionSystem2006}, with other work being
 referenced where appropriate.
 
 \section{Involved parties}

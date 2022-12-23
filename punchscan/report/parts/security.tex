@@ -43,7 +43,7 @@ able to learn the plaintext vote of any ballot.
 \subsection{Vote-buying attack}
 
 There does however exist a vote-buying attack on an earlier version of
-punchscan, described by Moran and
+Punchscan, described by Moran and
 Naor\autocite{moranSplitballotVotingEverlasting2010}. The key difference is
 that this earlier version of Punchscan did not require a voter to commit to
 which half of the ballot to keep until after they had voted. It can be shown
@@ -65,7 +65,7 @@ figure \ref{fig:vote_buying}. Green ballot halves are those with order $a
 \rightarrow b$, so a voter will receive payment no matter who they vote for.
 Orange ones are $b \rightarrow a$ receipts, so the voter must pick the left
 option --- voting for Bob --- if they want to get paid. Red ones are $b
-\rightarrow a$ receipts, so the voster must vote for Alice in order to get paid.
+\rightarrow a$ receipts, so the voter must vote for Alice in order to get paid.
 Thus the coercing party is able to force one out of four Bob voters to vote for
 Alice, without causing any Alice voters to vote for Bob.
 
@@ -92,7 +92,7 @@ authority --- at least during the setup and decryption phases.
 Recall that during the setup phase a certain number of rows of the \textbf{P} and
 \textbf{D} tables are spoiled and verified. Thus for every row where the election authority 
 was dishonest there is a chance of $\frac{1}{2}$ of it being caught. Consider the
-generalized case where the election authority cheats on $f$ out of $n$ ballots,
+generalised case where the election authority cheats on $f$ out of $n$ ballots,
 with $k$ being audited. The introductory paper shows that an upper bound of the
 election authority not being caught is given by:
 
@@ -106,11 +106,11 @@ ballots to total ballots.
 \subsection{Decryption-phase audit}
 
 Recall that during decryption one half of each shard of the \textbf{D} table is
-revealed. To minimze its chance of being caught, a cheating election authority
+revealed. To minimise its chance of being caught, a cheating election authority
 will spread the votes on which it cheated across as few shards as possible.
 Assuming $k$ shards were tempered with then this audit has a chance of
 $\frac{1}{2^k}$ of not detecting this. Both this probability, as well as the
-signifiance (in terms of tampered-with votes) of a single tampered-with shard
+significance (in terms of tampered-with votes) of a single tampered-with shard
 not being caught, can be lowered by decreasing the shard size. In the extreme
 case one picks a shard size of $1$, at which points $k$ tampered votes have a
 probability of $\frac{1}{2^k}$ of not being detected.
@@ -137,8 +137,8 @@ can do so in the few minutes they spend in a voting booth.
 An alternative might be to introduce an additional audit phase, during which a
 fraction of printed ballots is audited. The remaining unspoiled ballots would
 then be sealed by the auditors, and not reopened until the day of the election.
-No discussion of this takes place in the Punchscan paper, but Kelsyey et
-al\autocite{kelseyAttackingPaperBasedE2E2010} mention it in passing.
+No discussion of this takes place in the Punchscan paper, but Kelsey et
+al.\autocite{kelseyAttackingPaperBasedE2E2010} mention it in passing.
 
 \subsection{Malicious poll workers}
 
@@ -151,7 +151,7 @@ When they then leave the voting booth, the only evidence of having cheated ---
 the manipulated half of the ballot --- is destroyed. To prevent this one would
 have to make poll workers commit to which ballot to hand out before the voter
 announces which page to keep. At the same time one must still ensure that a
-voter does not see their future ballot until after they commited to which half
+voter does not see their future ballot until after they committed to which half
 to keep. Even more ways by which a cheating election authority can influence
 the vote are discussed by Lundin et al\autocite{lundinTearDestroyChain2012}.
 
